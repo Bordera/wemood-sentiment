@@ -6,6 +6,7 @@ from googleapiclient import discovery
 import httplib2
 from oauth2client.client import GoogleCredentials
 
+
 DISCOVERY_URL = ('https://{api}.googleapis.com/$discovery/rest?'
                  'version={apiVersion}')
 
@@ -34,9 +35,9 @@ def transcribe(speech_file,language):
     service_request = service.speech().syncrecognize(
         body={
             'config': {
+                'languageCode': language,  # a BCP-47 language tg
                 'encoding': 'LINEAR16',  # raw 16-bit signed LE samples
-                'sampleRate': 44100,  # 16 khz
-                'languageCode': language,  # a BCP-47 language tag
+                'sampleRate': 16000,  # 16 khz
             },
             'audio': {
                 'content': speech_content.decode('UTF-8')
@@ -45,5 +46,5 @@ def transcribe(speech_file,language):
     # [END construct_request]
     # [START send_request]
     response = service_request.execute()
-    print(json.dumps(response))
+    return response
     # [END send_request]

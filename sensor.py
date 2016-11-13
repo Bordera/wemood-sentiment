@@ -2,28 +2,29 @@ import json
 import sys
 
 from subprocess import check_output
+from datetime import datetime as dt
 
 import tools
 import record
 import transcribe
+import sentiment
 
 # record audio
 
-#file_name = tools.randwavefile()
-#record.record_audio(sys.argv[1], file_name)
+output_data = {"date":unicode(dt.now())}
+file_name = tools.randwavefile()
+record_file = record.record_audio(sys.argv[1], file_name)
 
-# extract text https://cloud.google.com/speech/docs/languages
+## extract text
+# https://cloud.google.com/speech/docs/languages
 
-file_name = "data/PMYVU.wav"
-sound_text = transcribe.transcribe(file_name,sys.argv[2])
-print(sound_text)
+sound_output = transcribe.transcribe(record_file,sys.argv[2])
+output_data["transcription_data"]= sound_output
+sentiment_output = sentiment.get_text_sentiment(sound_output["results"][0]["alternatives"][0]["transcript"])
+output_data["sentiment_data"] = sentiment_output
+output_data["sentiment_score"] = sentiment_output['docSentiment']['score']
+
 
 # extract sentiment
-
-
-
-
-
-
-#with open('output/output.json', 'w') as outfile:
-#    json.dump(sentiment_output, outfile)
+with open('output/output.json', 'w') as outfile:
+    json.dump(output_data, outfile)
