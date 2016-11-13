@@ -28,8 +28,10 @@ sentiment_output = sentiment.get_text_sentiment(sound_output["results"][0]["alte
 output_data["sentiment_data"] = sentiment_output
 output_data["sentiment_score"] = sentiment_output['docSentiment']['score']
 
-db.sensors.insert_one(clean_program_data)
+output_data["sensor"]= "sentiment"
 
-# extract sentiment
+# write_output
 with open('output/output.json', 'w') as outfile:
     json.dump(output_data, outfile)
+
+db.sensors.insert_one(output_data)
